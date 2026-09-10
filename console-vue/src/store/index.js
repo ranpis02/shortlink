@@ -4,8 +4,7 @@ import { createStore } from 'vuex'
 const store = createStore({
   state() {
     return {
-      // domain: 'nurl.ink'
-      domain: 's.nageoffer.com'
+      domain: import.meta.env.VITE_SHORT_LINK_DOMAIN || window.location.host
     }
   }
 })
