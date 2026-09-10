@@ -76,7 +76,7 @@
         </div>
         <!-- 表格展示区域 -->
         <el-table :data="tableData" height="calc(100vh - 240px)" style="width: calc(100vw - 230px)"
-          :header-cell-style="{ background: '#f7f8fa', color: '#606266' }">
+          :header-cell-style="{ background: 'var(--surface-muted)', color: 'var(--text-secondary)' }">
           <!-- 数据为空时展示的内容 -->
           <template #empty>
             <div style="height: 60vh; display: flex; align-items: center; justify-content: center">
@@ -87,7 +87,7 @@
           <el-table-column label="短链接信息" prop="info" min-width="300">
             <template #header>
               <el-dropdown>
-                <div :class="{ orderIndex: orderIndex === 0 }" class="block" style="margin-top: 3px">
+                <div :class="{ orderIndex: orderIndex === 0 }" class="block interactive-header" style="margin-top: 3px">
                   <span>短链接信息</span>
                   <el-icon>
                     <CaretBottom />
@@ -120,6 +120,9 @@
             </template>
           </el-table-column>
           <el-table-column label="短链接网址" prop="url" min-width="300">
+            <template #header>
+              <span class="interactive-header">短链接网址</span>
+            </template>
             <template #default="scope">
               <div class="table-url-box">
                 <!-- 当失效后就不能在点击跳转了 -->
@@ -132,9 +135,9 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="copy" width="170">
+          <el-table-column prop="copy" width="100" align="center">
             <template #default="scope">
-              <div style="display: flex; align-items: center">
+              <div class="quick-actions">
                 <!-- 二维码 -->
                 <QRCode :url="'http://' + scope.row.fullShortUrl"></QRCode>
                 <!-- 表格中的复制链接按钮 -->
@@ -149,7 +152,7 @@
           <el-table-column label="访问次数" prop="times" width="120">
             <template #header>
               <el-dropdown>
-                <div :class="{ orderIndex: orderIndex === 1 }" class="block" style="margin-top: 3px">
+                <div :class="{ orderIndex: orderIndex === 1 }" class="block interactive-header" style="margin-top: 3px">
                   <span>访问次数</span>
                   <el-icon>
                     <CaretBottom />
@@ -177,7 +180,7 @@
           <el-table-column label="访问人数" prop="people" width="120">
             <template #header>
               <el-dropdown>
-                <div :class="{ orderIndex: orderIndex === 2 }" class="block" style="margin-top: 3px">
+                <div :class="{ orderIndex: orderIndex === 2 }" class="block interactive-header" style="margin-top: 3px">
                   <span>访问人数</span>
                   <el-icon>
                     <CaretBottom />
@@ -205,7 +208,7 @@
           <el-table-column label="IP数" prop="IP" width="120">
             <template #header>
               <el-dropdown>
-                <div :class="{ orderIndex: orderIndex === 3 }" class="block" style="margin-top: 3px">
+                <div :class="{ orderIndex: orderIndex === 3 }" class="block interactive-header" style="margin-top: 3px">
                   <span>IP数</span>
                   <el-icon>
                     <CaretBottom />
@@ -231,6 +234,9 @@
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="180">
+            <template #header>
+              <span class="interactive-header">操作</span>
+            </template>
             <template #default="scope">
               <div style="display: flex; align-items: center">
                 <!-- <el-link
@@ -822,9 +828,9 @@ const removeLink = (data) => {
 
 .hover-box:hover {
   cursor: pointer;
-  color: rgba(40, 145, 206, 0.6);
-  background-color: #f7f7f7;
-  box-shadow: 0px 2px 8px 0px rgba(28, 41, 90, 0.1);
+  color: var(--brand-primary);
+  background-color: var(--surface-muted);
+  box-shadow: var(--shadow-sm);
 }
 
 .option-title {
@@ -834,7 +840,7 @@ const removeLink = (data) => {
   height: 56px;
   font-size: 15px;
   font-weight: 600;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--border-color);
 
   span {
     font-size: 12px;
@@ -848,7 +854,9 @@ const removeLink = (data) => {
   position: relative;
   height: 100%;
   width: 190px;
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--text-secondary);
+  background: var(--surface-color);
+  border-right: 1px solid var(--border-color);
 
   .item-box {
     height: 43px;
@@ -882,7 +890,7 @@ const removeLink = (data) => {
 
 .recycle-box {
   flex: 1;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -924,8 +932,8 @@ const removeLink = (data) => {
 }
 
 .selectedItem {
-  color: #3464e0 !important;
-  background-color: #ebeffa !important;
+  color: var(--brand-primary) !important;
+  background-color: var(--brand-soft) !important;
   font-weight: 600 !important;
 }
 
@@ -935,6 +943,18 @@ const removeLink = (data) => {
   .el-icon {
     color: rgb(121, 187, 255) !important;
   }
+}
+
+.interactive-header {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  user-select: none;
+}
+
+.interactive-header:hover {
+  color: var(--brand-primary);
 }
 
 .table-edit {
@@ -960,11 +980,15 @@ const removeLink = (data) => {
 .content-box {
   flex: 1;
   padding: 16px;
-  background-color: #eef0f5;
+  background-color: var(--page-background);
   position: relative;
 
   .table-box {
-    background-color: #ffffff;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
     height: 100%;
 
     .buttons-box {
@@ -1080,7 +1104,7 @@ const removeLink = (data) => {
     display: -webkit-box; //作为弹性伸缩盒子模型显示。
     -webkit-box-orient: vertical; //设置伸缩盒子的子元素排列方式--从上到下垂直排列
     -webkit-line-clamp: 1; //显示的行
-    color: rgba(0, 0, 0, 0.4);
+    color: var(--text-tertiary);
   }
 }
 
@@ -1097,7 +1121,7 @@ const removeLink = (data) => {
 
     span:nth-child(1) {
       font-weight: 400;
-      color: rgba(0, 0, 0, 0.4);
+      color: var(--text-tertiary);
     }
   }
 
@@ -1110,13 +1134,36 @@ const removeLink = (data) => {
 
     span:nth-child(1) {
       font-weight: 400;
-      color: rgba(0, 0, 0, 0.4);
+      color: var(--text-tertiary);
     }
   }
 }
 
 .copy-url {
-  margin-left: 10px;
+  margin: 0;
+}
+
+.quick-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.quick-actions .table-edit {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  border-radius: 8px;
+  font-size: 17px;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.quick-actions .table-edit:hover {
+  color: var(--brand-primary);
+  background: var(--brand-soft);
 }
 
 .demo-tabs>.el-tabs__content {
