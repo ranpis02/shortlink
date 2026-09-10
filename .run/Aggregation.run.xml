@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Aggregation" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="shortlink-aggregation" />
+    <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.nageoffer.shortlink.aggregation.AggregationServiceApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
