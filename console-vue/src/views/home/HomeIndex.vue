@@ -1,45 +1,22 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header height="54px" style="padding: 0">
+      <el-header height="72px" style="padding: 0">
         <div class="header">
-          <div @click="toMySpace" class="logo">拿个offer-SaaS短链接@马丁</div>
-          <div style="display: flex; align-items: center">
-            <a
-              class="link-span"
-              style="text-decoration: none"
-              target="_blank"
-              href="https://nageoffer.com/shortlink/"
-              >官方文档</a
-            >
-            <a
-              class="link-span"
-              style="text-decoration: none"
-              target="_blank"
-              href="https://nageoffer.com/planet/group/"
-              >加沟通群</a
-            >
-            <a
-                class="link-span"
-                style="text-decoration: none"
-                target="_blank"
-                href="https://nageoffer.com/shortlink/video/"
-            >🔥视频教程</a
-            >
-            <a
-                class="link-span"
-                style="text-decoration: none"
-                target="_blank"
-                href="http://shortlink.nageoffer.com"
-            >演示环境</a
-            >
+          <div @click="toMySpace" class="brand" aria-label="返回短链空间">
+            <span class="brand-mark"><el-icon><Link /></el-icon></span>
+            <span class="brand-copy">
+              <strong>SaaS 短 链 接 平 台</strong>
+              <small>Link management workspace</small>
+            </span>
+          </div>
+          <div class="header-actions">
+            <ThemeSwitcher />
             <el-dropdown>
-              <div class="block">
-                <span
-                    class="name-span"
-                    style="text-decoration: none"
-                >{{username}}</span
-                >
+              <div class="user-trigger">
+                <span class="user-avatar">{{ username?.slice(0, 1)?.toUpperCase() }}</span>
+                <span class="name-span">{{ username }}</span>
+                <el-icon><ArrowDown /></el-icon>
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
@@ -85,11 +62,11 @@ import { ref, getCurrentInstance, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { removeKey, removeUsername, getToken, getUsername } from '@/core/auth.js'
 import { ElMessage } from 'element-plus'
+import ThemeSwitcher from '@/components/ThemeSwitcher.vue'
 const { proxy } = getCurrentInstance()
 const API = proxy.$API
 // 当当前路径和菜单不匹配时，菜单不会被选中
 const router = useRouter()
-const squareUrl = ref('https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png')
 const toMine = () => {
   router.push('/home' + '/account')
 }
@@ -113,19 +90,10 @@ const toMySpace = () => {
 }
 const username = ref('')
 onMounted(async () => {
-  const actualUsername = getUsername()
-  const res = await API.user.queryUserInfo(actualUsername)
-  // firstName.value = res?.data?.data?.realName?.split('')[0]
+  const actualUsername = getUsername() || '用户'
+  await API.user.queryUserInfo(actualUsername)
   username.value = truncateText(actualUsername, 8)
 })
-const extractColorByName = (name) => {
-  var temp = []
-  temp.push('#')
-  for (let index = 0; index < name.length; index++) {
-    temp.push(parseInt(name[index].charCodeAt(0), 10).toString(16))
-  }
-  return temp.slice(0, 5).join('').slice(0, 4)
-}
 
 // 辅助函数，用于截断文本
 const truncateText = (text, maxLength) => {
@@ -147,18 +115,21 @@ const truncateText = (text, maxLength) => {
   }
 
   .el-main {
-    background-color: #e8e8e8;
+    background-color: var(--page-background);
   }
 }
 
 .header {
-  color: rgba(0,0,0,.85);
-  background-color: #252b30;
-  padding: 0 0 0 20px;
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--surface-color) 88%, transparent);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 24px;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-sm);
 
   .block {
     cursor: pointer;
@@ -169,58 +140,106 @@ const truncateText = (text, maxLength) => {
 }
 
 .content-box {
-  height: calc(100vh - 50px);
-  background-color: white;
+  height: calc(100vh - 72px);
+  background-color: var(--page-background);
 }
 
 :deep(.el-tooltip__trigger:focus-visible) {
   outline: unset;
 }
 
-.logo {
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: #fff;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+  box-shadow: 0 8px 20px var(--brand-shadow);
+  font-size: 19px;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.brand-copy strong {
+  color: var(--text-primary);
   font-size: 15px;
-  font-weight: 600;
-  color: #e8e8e8;
-  font-family: Helvetica, Tahoma, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Heiti SC',
-    'Microsoft YaHei', 'WenQuanYi Micro Hei';
-  // font-family: 'Helvetica Neue', Helvetica, STHeiTi, Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.brand-copy small {
+  margin-top: 4px;
+  color: var(--text-tertiary);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-trigger {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 40px;
+  padding: 4px 10px 4px 5px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  background: var(--surface-muted);
   cursor: pointer;
 }
 
-.logo:hover {
+.user-avatar {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
   color: #fff;
-}
-
-.link-span {
-  color: #fff;
-  opacity: .6;
-  margin-right: 30px;
-  font-size: 16px;
-  font-family: 'Helvetica Neue', Helvetica, STHeiTi, Arial, sans-serif;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.link-span:hover {
-  text-decoration: underline !important;
-  opacity: 1;
-  color: #fff;
+  background: linear-gradient(135deg, #8b5cf6, #4f46e5);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .name-span {
-  color: #fff;
-  opacity: .6;
-  margin-right: 30px;
-  font-size: 12px;
-  font-family: 'Helvetica Neue', Helvetica, STHeiTi, Arial, sans-serif;
-  cursor: pointer;
-  text-decoration: none;
+  max-width: 100px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.avatar {
-  transform: translateY(-2px);
+@media (max-width: 680px) {
+  .header {
+    padding: 0 12px;
+  }
+
+  .brand-copy small,
+  .name-span {
+    display: none;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
 }
 </style>
